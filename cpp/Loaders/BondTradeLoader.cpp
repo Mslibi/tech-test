@@ -18,8 +18,8 @@ BondTrade* BondTradeLoader::createTradeFromLine(std::string line) {
     if (items.size() < 7) {
         throw std::runtime_error("Invalid line format");
     }
-    
-    BondTrade* trade = new BondTrade(items[6]);
+    // Assumption is that TradeType is correctly labelled (i.e. line 10 introduces 'Supra' as an entry for type)
+    BondTrade* trade = new BondTrade(items[6], items[0]);
     
     std::tm tm = {};
     std::istringstream dateStream(items[1]);
