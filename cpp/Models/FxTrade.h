@@ -10,10 +10,13 @@ public:
     static constexpr const char* FxSpotTradeType = "FxSpot";
     static constexpr const char* FxForwardTradeType = "FxFwd";
     
-    FxTrade(const std::string& tradeId = "", const std::string& tradeType = FxSpotTradeType)
+    FxTrade(const std::string& tradeId, const std::string& tradeType)
         : tradeType_(tradeType) {
         if (!tradeId.empty()) {
             tradeId_ = tradeId;
+        }
+        else {
+            throw std::invalid_argument("A valid non null, non empty trade ID must be provided");
         }
     }
     
