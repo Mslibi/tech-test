@@ -56,7 +56,14 @@ add_library(RiskSystem
 )
 
 target_include_directories(RiskSystem PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(RiskSystem Models Loaders Pricers)
+
+# pugixml (vendored third-party XML library, used for Exercise 3)
+add_library(pugixml STATIC
+    third_party/pugixml/pugixml.cpp
+)
+
+target_include_directories(pugixml PUBLIC third_party/pugixml)
+target_link_libraries(RiskSystem Models Loaders Pricers pugixml)
 
 # Find and link threading library (required for Exercise 8)
 find_package(Threads REQUIRED)
