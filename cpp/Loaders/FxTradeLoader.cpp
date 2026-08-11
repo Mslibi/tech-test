@@ -47,7 +47,7 @@ FxTrade* FxTradeLoader::createTradeFromLine(const std::string& line) {
 
     return trade;
 }
-void FxTradeLoader::loadTradesFromFile(const std::string& filename, TradeList& tradeList) {
+void FxTradeLoader::loadTradesFromFile(const std::string& filename, ITradeReceiver& receiver) {
     if (filename.empty()) {
         throw std::invalid_argument("Filename cannot be null");
     }
@@ -61,7 +61,7 @@ void FxTradeLoader::loadTradesFromFile(const std::string& filename, TradeList& t
     std::string line;
     while (std::getline(stream, line)) {
         if (lineCount >= 2 && line.rfind("END", 0) != 0) {
-            tradeList.add(createTradeFromLine(line));
+            receiver.add(createTradeFromLine(line));
         }
         lineCount++;
     }
@@ -76,6 +76,10 @@ std::vector<ITrade*> FxTradeLoader::loadTrades() {
         result.push_back(tradeList[i]);
     }
     return result;
+}
+
+void FxTradeLoader::streamTrades(ITradeReceiver& receiver) {
+    loadTradesFromFile(dataFile_, receiver);
 }
 
 std::string FxTradeLoader::getDataFile() const {

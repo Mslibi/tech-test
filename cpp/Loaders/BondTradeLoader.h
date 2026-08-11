@@ -4,6 +4,7 @@
 #include "ITradeLoader.h"
 #include "../Models/BondTrade.h"
 #include "../Models/BondTradeList.h"
+#include "../Models/ITradeReceiver.h"
 #include <string>
 #include <vector>
 #include <memory>
@@ -14,12 +15,14 @@ private:
     std::string dataFile_;
     
     BondTrade* createTradeFromLine(const std::string& line);
-    void loadTradesFromFile(const std::string& filename, BondTradeList& tradeList);
+    void loadTradesFromFile(const std::string& filename, ITradeReceiver& receiver);
     
 public:
     std::vector<ITrade*> loadTrades() override;
     std::string getDataFile() const override;
     void setDataFile(const std::string& file) override;
+
+    void streamTrades(ITradeReceiver& receiver) override;
 };
 
 #endif // BONDTRADELOADER_H

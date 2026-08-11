@@ -4,6 +4,7 @@
 #include "ITradeLoader.h"
 #include "../Models/FxTrade.h"
 #include "../Models/TradeList.h"
+#include "../Models/ITradeReceiver.h"
 #include <string>
 #include <vector>
 
@@ -13,7 +14,7 @@ private:
     std::string dataFile_;
 
     FxTrade* createTradeFromLine(const std::string& line);
-    void loadTradesFromFile(const std::string& filename, TradeList& tradeList);
+    void loadTradesFromFile(const std::string& filename, ITradeReceiver& receiver);
     
     void splitOnSeparator(const std::string& line, const std::string& delimiter, std::vector<std::string>& items);
 public:
@@ -21,6 +22,8 @@ public:
     std::vector<ITrade*> loadTrades() override;
     std::string getDataFile() const override;
     void setDataFile(const std::string& file) override;
+
+    void streamTrades(ITradeReceiver& receiver) override;
 };
 
 #endif // FXTRADELOADER_H
