@@ -68,6 +68,8 @@ void BasePricingEngine::priceTrade(ITrade* trade, IScalarResultReceiver* resultR
 }
 
 double BasePricingEngine::calculateResult() {
+    
+    std::lock_guard<std::mutex> lock(randomMutex_);
     return random_.nextDouble() * 100.0;
 }
 

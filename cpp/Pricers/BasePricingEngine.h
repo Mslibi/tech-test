@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 #include <random>
+#include <mutex>
 
 class BasePricingEngine : public IPricingEngine {
 protected:
@@ -40,6 +41,7 @@ private:
     };
     
     Random random_;
+    std::mutex randomMutex_;
     
     static std::map<std::string, std::string>& getTradesToError();
     static std::map<std::string, std::string>& getTradesToWarn();

@@ -17,6 +17,27 @@ private:
     std::map<std::string, IPricingEngine*> pricers_;
     std::mutex resultMutex_;
     
+    class ThreadSafeReceiver : public IScalarResultReceiver {
+    public:
+        ThreadSafeReceiver(IScalarResultReceiver* target, std::mutex* mutex)
+            : target_(target), mutex_(mutex) {
+        }
+
+        void addResult(const std::string& tradeId, double result) override {
+            std::lock_guard<std::mutex> lock(*mutex_);
+            target_->addResult(tradeId, result);
+        }
+
+        void addError(const std::string& tradeId, const std::string& error) override {
+            std::lock_guard<std::mutex> lock(*mutex_);
+            target_->addError(tradeId, error);
+        }
+
+    private:
+        IScalarResultReceiver* target_;
+        std::mutex* mutex_;
+    };
+
     void loadPricers();
     
 public:
@@ -24,6 +45,7 @@ public:
     
     void price(const std::vector<std::vector<ITrade*>>& tradeContainers, 
                IScalarResultReceiver* resultReceiver);
+
 };
 
 #endif // PARALLELPRICER_H
