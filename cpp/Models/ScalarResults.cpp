@@ -1,5 +1,6 @@
 #include "ScalarResults.h"
 #include <stdexcept>
+#include <set>
 
 ScalarResults::~ScalarResults() = default;
 
@@ -36,22 +37,36 @@ void ScalarResults::addError(const std::string& tradeId, const std::string& erro
     errors_[tradeId] = error;
 }
 
+ScalarResults::Iterator::Iterator(const ScalarResults* parent, const std::vector<std::string>& ids, size_t index)
+    : parent_(parent), ids_(ids), index_(index) {
+}
+
 ScalarResults::Iterator& ScalarResults::Iterator::operator++() {
-    throw std::runtime_error("Iterator not implemented");
+    index_++;
+    return *this;
 }
 
 ScalarResult ScalarResults::Iterator::operator*() const {
-    throw std::runtime_error("Iterator not implemented");
+    return (*parent_)[ids_[index_]].value();
 }
 
 bool ScalarResults::Iterator::operator!=(const Iterator& other) const {
-    throw std::runtime_error("Iterator not implemented");
+    return (index_ != other.index_);
 }
 
 ScalarResults::Iterator ScalarResults::begin() const {
-    throw std::runtime_error("Not implemented");
+    std::vector<std::string> ids = getTradeIds();
+    return Iterator(this, ids, 0);
 }
 
 ScalarResults::Iterator ScalarResults::end() const {
-    throw std::runtime_error("Not implemented");
+    std::vector<std::string> ids = getTradeIds();
+    return Iterator(this, ids, ids.size());
+}
+
+std::vector<std::string> ScalarResults::getTradeIds() const {
+    std::set<std::string> ids;
+    for (const auto& pair : results_) ids.insert(pair.first);
+    for (const auto& pair : errors_) ids.insert(pair.first);
+    return std::vector<std::string>(ids.begin(), ids.end());
 }
